@@ -39,93 +39,95 @@
 									<header>
 										<span class="date">November 24, 2021</span>
 										<h2><a href="#">DICOM<br />
-										Extract Data from PACS</a></h2>
+											EXTRACT DATA FROM PACS</a></h2>
 									</header>
 									<a class="image fit"><img src="../images/dicom.jpg" alt="" /></a>
 
-									<H2>1 Abstract</H2>
-									<p>Scrap DICOM from a PACS is a hard process. The lack of documentation and examples make this kind of data mining difficult. The Goal of this work is to show you the basic idea behide DICOM and how to get these data. Some pitfalls will be descibed.
+									<H2>1 ABSTRACT</H2>
+									<p>
+										Scraping DICOM from a PACS is a hard process. The lack of documentation and examples make this kind of data mining difficult. The Goal of this work is to show you the basic idea behind DICOM and how to get these data. Some pitfalls will be described.
 									</p>
 
 
-									<h2>2 Motivation</h2>
-									<p>Digital Imaging and COmmunication in Medicine (DICOM) is the most used model to store and query medical data. Understanding DICOM will open the door to the medical data world.
+									<h2>2 MOTIVATION</h2>
+									<p>
+										Digital Imaging and COmmunication in Medicine (DICOM) is the most used model to store and query medical data. Understanding DICOM will open the door to the medical data world.
 									</p>
 
 
-									<h2>DICOM model</h2>
+									<h2>DICOM MODEL</h2>
 									<a class="image fit"><img src="../images/projects/dicom_scrap/dicom_object.png" alt="dicom object" /></a>
-									<p>DICOM model is based on nested data. 
-										You can see a "first layer" Data Element (patient_name). 
-										A DICOM object can be nested into a Sequence in order to save multiple Sequence of DICOM Object (Like a multi sequence IRM with multiple images per Object). 
-										Any Data can be saved using private tag (like a movie in MP4).</p>
+									<p>
+										DICOM model is based on nested data. You can see a "first layer" Data Element (patient_name). A DICOM object can be nested into a Sequence in order to save multiple Sequences of a DICOM Object (Like a multi sequence IRM with multiple images per Object). Any Data can be saved using a private tag (like a movie in MP4).
+									</p>
 
 
-									<h2>DICOM data elements</h2>
+									<h2>DICOM DATA ELEMENTS</h2>
 									<a class="image fit"><img src="../images/projects/dicom_scrap/dicom_data_element.png" alt="dicom data element" /></a>
 										<p>DICOM Data Element as encoded as a dictionary, Key: address of the element, Value: Value group.</p>
-										<p>Value group is composed of a value representation (What is this data: here Person Name), Value Lenght and Value (the data itself)</p>
-										<p>As a result, DICOM format a very adaptable but harder to acces. As Example, the OS is not natively compatible, you need special viewer).</p>
+										<p>Value group is composed of a value representation (What is this data: here Person Name), Value Length and Value (the data itself).</p>
+										<p>As a result, DICOM format is very adaptable but harder to access. As Example, the OS is not natively compatible, you need a special viewer).</p>
 
-									<h2>DICOM basic exchange</h2>
+									<h2>DICOM BASIC EXCHANGE</h2>
 									<a class="image fit"><img src="../images/projects/dicom_scrap/dicom_basic_exchange.png" alt="dicom data element" /></a>
-									<p>Communication is embeded in DICOM format (the COM of DICOM). The request system work as the TCP/IP protocole. 
-										The client ask the server for a service.
+									<p>
+										Communication is embedded in DICOM format (the COM of DICOM). The request system works as the TCP/IP protocol. The client asks the server for a service.
 									</p>
 
 
-									<h2>DICOM request message model</h2>
+									<h2>DICOM REQUEST MESSAGE MODEL</h2>
 									<a class="image fit"><img src="../images/projects/dicom_scrap/model_req_message.png" alt="dicom model request message" /></a>
-									<p>The communication configuration is embeded into the DICOM Associate Request Message.
-										The Presentation Context contain the transfert syntax wich is the type of data to transfert (MRI, US, Scaner...).
-										
+									<p>
+										The communication configuration is embedded into the DICOM Associate Request Message. The Presentation Context contains the transfert syntax which is the type of data to transfert (MRI, US, Scanner...)..
 									</p>
-									<p>As an example: a radiologist viewer ask the printer for a US print. The printer validate the transfert if it can print US image.</p>
-									<p>The Service Class User SCU and Service Class Provider set the role of each partner. With the same example, the SCU is the viewer (ask for a service) and the printer is the SCP (provide a print service).</p>
+									<p>
+										As an example: a radiologist viewer asks the printer for a US print. The printer validates the transfert if it can print a US image.
+									</p>
+									<p>
+										The Service Class User SCU and Service Class Provider set the role of each partner. With the same example, the SCU is the viewer (ask for a service) and the printer is the SCP (provide a print service).
+									</p>
 
 
-									<h2>DICOM exchange protocole </h2>
+									<h2>DICOM EXCHANGE PROTOCOL</h2>
 									<a class="image fit"><img src="../images/projects/dicom_scrap/protocole_data_unit.png" alt="" /></a>
-									<p>After the association establishment, the data block are sends. An Acknowledgement close the At the end of the transaction.</p>
-									<p>Note: end of transaction process is embbeded in PyNetDicom. If you build you own comunication process don't forget to close the service without response (after a while).</p>
+									<p>
+										After the association establishment, the data blocks are sent. An Acknowledgement closes the end of the transaction.
+									</p>
+									<p>
+										Note: end of transaction process is embedded in PyNetDicom. If you build your own communication process don't forget to close the service without response (after a while).
+									</p>
 
-									<h2>PACS query process</h2>
+									<h2>PACS QUERY PROCESS</h2>
 									<a class="image fit"><img src="../images/projects/dicom_scrap/pacs_process.png" alt="Query DICOM PACS process" /></a>
 									<p>What I've learned for real world PACS:</p>
-									<p>1/ Querying a PACS with the StudyInstanceUID (study identifer) from the RIS fail most of the time. It's usually due to PACS/RIS segmentation and server migrations.</p>
-									<p>2/ PACS query system with DICOM query is limited. It's not possible to select an exam type (arthro scaner)</p>
-									<p>3/ Query the PACS with Accession Number can fail (testing result with around 20% of empty DICOM)</p>
+									<p>1/ Querying a PACS with the StudyInstanceUID (study identifier) from the RIS fails most of the time. It's usually due to PACS/RIS segmentation and server migrations.</p>
+									<p>2/ PACS query system with DICOM query is limited. It's not possible to select an exam type (arthro scanner).</p>
+									<p>3/ Query the PACS with Accession Number can fail (testing result with around 20% of empty DICOM).</p>
 									<p>The process I used:</p>
-									<p>1/ Query the RIS and apply the filter you're interessed in (usually SQL) and get back the Accession Number (examen identifier).
-									With you list of AN. (Note: an AN is a sensible Data)
-									</p>
+									<p>1/ Query the RIS and apply the filter you're interested in (usually SQL) and get back the Accession Number (examen identifier). With your list of AN. (Note: an AN is a sensible Data).</p>
 									<p>2/ Query the PACS with the AN to get all StudyInstanceUID linked (C-FIND).</p>
-									<p>3/ Query the PACS with the StudyInstanceUID (C-FIND). </p>
-									<p>4/ The AN can be linked to study you don't need. Example: an AN of a mamography can be compose of the first mamography images, plus an US imges. Filter DICOM you don't need.</p>
+									<p>3/ Query the PACS with the StudyInstanceUID (C-FIND).</p>
+									<p>4/ The AN can be linked to study you don't need. Example: an AN of a mammography can be composed of the first mammography images, plus US images. Filter DICOM you don't need.</p>
 
 
-									<h2>C-MOVE process</h2>
+									<h2>C-MOVE PROCESS</h2>
 									<a class="image fit"><img src="../images/projects/dicom_scrap/cmove_process.png" alt="cmove process" /></a>
 
-									<p>Most of the time, C-GET won't work. C-FIND ask the PACS to send back the DICOM you looking for. After the association establishment, open a listen service (STORE-SCP) to receive the DICOM from the PACS.</p>
+									<p>Most of the time, C-GET won't work. C-FIND asks the PACS to send back the DICOM you are looking for. After the association establishment, open a listen service (STORE-SCP) to receive the DICOM from the PACS.</p>
 
 
 
-									<h2>Coding DICOM</h2>
+									<h2>CODING DICOM</h2>
 
-									<p>Understanding how a DICOM dataset was the first step to achieve the mining. </p>
+									<p>Understanding how a DICOM dataset was the first step to achieve the mining.</p>
 										
 									
-									<p>2 great libraries: <a href="https://pydicom.github.io/pydicom/stable/old/pydicom_user_guide.html">PyDicom</a> and <a href="https://pydicom.github.io/pynetdicom/stable/tutorials/index.html">PyNetDicom</a>, will make the the mining and processing easy.</p>
+									<p>2 great libraries: <a href="https://pydicom.github.io/pydicom/stable/old/pydicom_user_guide.html">PyDicom</a> and <a href="https://pydicom.github.io/pynetdicom/stable/tutorials/index.html">PyNetDicom</a>, will make mining and processing easy.</p>
 									
 									
-									
-								
-
-									<p>The first part is the basic C_FIND code to get SIUDs from AN</p>
+									<p>The first part is the basic C_FIND code to get SIUDs from AN.</p>
 
 									<script src="https://gist.github.com/saquiel/3bab85e7ac8dc875d3cb5ec19edb18e4.js"></script>
-
 
 
 									<p>The second part is the C-MOVE to get DICOM from SIUID</p>
@@ -147,7 +149,7 @@
 								<p>
 								<a href="https://link.springer.com/book/10.1007/978-3-540-74571-6">Digital Imaging and Communications in Medicine (DICOM)</a>
 								</p>
-
+								<p>Special thanks to all the Gleamer team.</p>
 								</article>
 
 

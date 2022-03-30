@@ -1,0 +1,253 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Energy Forecasting</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a>Data Science Project with Python applied to Energy</a>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="../index.html">Home</a></li>
+							<li ><a href="../projects.html">Projects</a></li>
+							<li class="active"><a href="#">Actual</a></li>
+							<!-- <li><a href="../generic.html">Generic Page</a></li>
+							<li><a href="elements.html">Elements Reference</a></li> -->
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/benoit-pont/" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="https://gist.github.com/saquiel" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+								<article>
+									<header>
+										<span class="date">March 13, 2021</span>
+										<h2><a href="#">Electricity Demand Forecasting<br />
+											Predict time series with Python and exponential model</a></h2>
+									</header>
+									<a class="image fit"><img src="../images/wind_turbin.jpg" alt="wind turbine image. Credit: Laura Penwell"/></a>
+
+									<H2>1 Abstract</H2>
+									<p>The goal of this study is to predict electricity consumption in a specific region (France Grand-Est).
+										3 Exponential Smoothing models (basic, multiplicative and season) were applied with good accuracy result (MAPE:3.2%).
+										A try had been done with SARIMAX. But, because the dataset was non stationay, this model was unrelevant (close to exponential).
+									</p>
+
+									<h2>2 Motivation</h2>
+									<p>Prediction of time series is largely used in finance. Ph.D Vincent Lefieux had made a model to predict electricity consumption in France.
+										The goal is to build exponential and SARIMA model to forewast electricity demand for the following year.
+									</p>
+
+									<h2>3 Dataset</h2>
+									<p>The data set is a csv file downloaded from Kaggle website.
+										<a href="https://link.springer.com/book/10.1007/978-3-540-74571-6">Digital Imaging and Communications in Medicine (DICOM)</a>
+										It is compound of 2126 samples and 22 variables.
+										Data came from Ayres de Campos et al. (2000) SisPorto 2.0 A Program for Automated Analysis of Cardiotocograms. J Matern Fetal Med 5:311-318.
+									</p>
+
+									<h2>4 Data preparation and Cleaning</h2>
+									<p>The most important preparation is to check for the absolute absence of patient identity.
+										With the help of a midwife we select the variable available in most CTG.
+										The study will contain 2016 samples and 11 variables.
+									</p>
+
+									<h3>Variables</h3>	
+									<p>
+										baseline value, accelerations, fetal_movement, uterine_contractions, light_decelerations, severe_decelerations , prolongued_decelerations ,
+										Abnormal_short_term_variability, mean_short_term_variability, abnormal_long_term_variability, long_term_variability.
+									</p>
+
+									<h2>5 Research Questions</h2>
+									<p>Main question:
+										Is it possible to predict fetal health with CTG variables? With what precision?
+									</p>
+									<p>Secondary question:
+										When predict fetal health, does some CTG variables useless ? Could we simplify the CTG interface?
+									</p>
+
+									<h2>6 Methods</h2>
+									<p>Does some CTG variables useless?
+										a/ Correlation between variables
+										b/ Principal Components Analysis (PCA)
+										</p>
+
+									<p>Is it possible to predict fetal health? With what precision?
+										a/ Find the best fitting model, data split
+										b/ Support vector machines: LinearSVC
+										c/ Nearest Neighbors Classification
+										d/ Support vector machines: C-Support Vector Classification
+										</p>
+
+									<h2>Findings: Does some CTG variables more usefull?</h2>
+									<a class="image fit"><img src="./images/figure1.png" alt="heatmap"/></a>
+									<p>We can't see any strong correlation between the variables (less than 0.5).
+										A variables reduction will be difficult.
+									</p>
+
+									<p>Principal component analysis of the samples 
+									</p>
+									<p>Correlation between variables
+									</p>
+									<a class="image fit"><img src="./images/figure2.png" alt="Correlation"/></a>
+									<p>The PCA show us that the 3 groups are mixed.
+
+										Generally, the more the groups are mixed, the more variables are need to achieve an accurate classification. 
+									</p>
+
+									<p>Principal component analysis of the variables 
+									</p>
+									<a class="image fit"><img src="./images/figure3.png" alt="PCA projection"/></a>
+
+
+									<p>The variables PCA shows spread variable around the circle.
+
+										The vector of most of the variables is long (>0.5).
+										
+										Wich mean that the variable reduction won’t be possible without losing too much information.
+										</p>
+
+									<p>Explained inertia by principal components 
+									</p>
+
+									<a class="image fit"><img src="./images/figure3.png" alt="Explained inertia"/></a>
+
+									<p>The main component (0) is small: 0.25.
+										The second too: 0.15
+										
+										Wich mean that these 2 components explain only 40% of the information.
+										
+										The total of the other component explain 60% of the information.
+										
+										To explain a fetal health accurately the 11 variables are needed.
+									</p>
+
+									<h2>Findings: Is it possible to predict fetal health?</h2>
+									<p>a/Find the best fitting model, data split
+									</p>
+									<p>The samples had been split in 2 group:
+										40% as train samples
+										60% as test samples
+										</p>
+										
+										<p>	10 runs had been done with each model in order to ensure results stability.
+										</p>
+
+									<h4>Support vector machines (SVMs) LinearSVC
+									</h4>
+									<p>LinearSVC with 10000 iteration => accuracy score: 0.786</p>
+									<h4>Nearest Neighbors Classification</h4>
+									<p>KNeighborsClassifier(n_neighbors=3) => accuracy score: 0.874
+									</p>
+
+									<h4>Support vector machines: C-Support Vector Classification
+									</h4>
+									<p>SVC() => accuracy score: 0.813
+									</p>
+
+									<p>The KNN is the more accurate over the 3 models.
+									</p>
+									
+
+									<h2>Findings: Test of the selected model with midwives usual values</h2>
+									<p>his is a real life model test using the variables traced by midwives in the patient report:
+										baseline value,  accelerations, uterine_contractions,
+										light_decelerations, severe_decelerations,
+										prolongued_decelerations, long_term_variability.
+										</p>
+
+									<p>KNeighborsClassifier(n_neighbors=3) => accuracy score: 0.756
+									</p>
+
+									<p>Because of the lack of some values, the model accuracy is lower: 0.756 < 0.874</p>
+
+									<h2>Limitations</h2>
+									<p>Because of the limitation of the number of samples, the model is fragile. With a larger sample, the model would be more accurate and thrustable.
+										Other important variables are missing, like gestational age and pregnancy pathologies.
+										</p>
+
+									<h2>Conclusions</h2>
+									<p>ACT and correlation between variables prove that all 11 variables are needed for accurate diagnostics. In clinic, the midwives usent all of those variable to estimate the patient risk.
+									</p>
+
+									<p>The model use to predict fetal health score an accuracy of more than 85%.
+										The prediction seems good, but only as a proposal value, not for a medical diagnostic.
+										</p>
+
+									<h2>Acknowledgements
+									</h2>
+									<p>Data set from Ayres de Campos et al. (2000) SisPorto 2.0 A Program for Automated Analysis of Cardiotocograms. J Matern Fetal Med 5:311-318.</p>
+									<p>Contribution of a midwife from a private clinic center.</p>
+
+									<h2>References</h2>
+									<p>UNESCO: Child survival and the SDGs (2020).
+									</p>
+									<p>SisPorto 2.0: A Program for Automated Analysis of Cardiotocograms. J Matern Fetal Med 5:311-318</p>
+
+									<h2>Code</h2>
+									<p>feel free to use it</p>
+
+
+									<!-- <p>Study process</p>
+									<p>Loading and cleaning the data set</p>
+									<p>Search for correlation between variables</p>
+									<p>Extract the maximum variance of the features with a PCA. Analyse the eigen vectors </p>
+									<p>Train and test machine learning algorithm: Suport Vector Machine and K Nearest Neighbours </p> -->
+
+
+
+									
+									<script src="https://gist.github.com/saquiel/39c0f5324c2d1ad78c22658d2e7ee211.js"></script>
+
+									<p>By Benoit Pont</p>
+									
+
+									<ul class="actions special">
+										<li><a href="projects.html" class="button">Back to projects</a></li>
+									</ul>
+								</article>
+
+
+							</section>
+
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						
+					</footer>
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>Copyright&copy; 2022</li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
