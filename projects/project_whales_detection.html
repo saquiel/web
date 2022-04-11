@@ -1,0 +1,241 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Whales Detection</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="../assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="../assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Header -->
+					<header id="header">
+						<a>Data Science Project Applied to Nature</a>
+					</header>
+
+				<!-- Nav -->
+					<nav id="nav">
+						<ul class="links">
+							<li><a href="../index.html">Home</a></li>
+							<li ><a href="../projects.html">Projects</a></li>
+							<li class="active"><a href="#">Actual</a></li>
+							<!-- <li><a href="../generic.html">Generic Page</a></li>
+							<li><a href="elements.html">Elements Reference</a></li> -->
+						</ul>
+						<ul class="icons">
+							<li><a href="https://www.linkedin.com/in/benoit-pont/" class="icon brands fa-linkedin"><span class="label">LinkedIn</span></a></li>
+							<li><a href="https://github.com/saquiel/public_projects" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+						</ul>
+					</nav>
+
+				<!-- Main -->
+					<div id="main">
+
+								<article>
+									<header>
+										<span class="date">April 11, 2022</span>
+										<h2><a href="#">Spark, XGBoost and SKLearn<br />
+											Whales Classification</a></h2>
+									</header>
+									<a class="image fit"><img src="../images/projects/whales_prediction/whale.jpg" alt="whale" /></a>
+
+									<H2>ABSTRACT</H2>
+									<p>
+										The echo-location clicks emitted by beaked whales are used to predict whale species (Curviers and Gervais).
+										After reducing the data dimensionality, an XGBoost model is built and tuned.
+										Finally, the model predicts equitably the 2 species of whales with 85% precision and 85% recall.
+										Some hints from the 								<a href="https://github.com/saquiel/public_projects/tree/main/whales_prediction">notebook</a> are shown during this article.
+									</p>
+
+
+									<h2>MOTIVATION</h2>
+									<p>
+										The echo-location clicks emitted by beaked whales are used to predict 2 whale species (Curviers and Gervais). 
+										Specific code tricks of the study are added in the article to avoid you from searching the whole notebook.
+									</p>
+
+
+									<h2>DATASET</h2>
+									<p>
+										The classification was done by Professor Hildebrand and became the basis for an estimate of the numbers of animals present at these sites. These results were presented in: Hildebrand, J. A., Baumann-Pickering, S., Frasier, K. E., Trickey, J. S., Merkens, K. P., Wiggins, S. M., McDonald, M. A., Garrison, L. P., Harris, D., Marques, T. A., and Thomas, L. (2015). "Passive acoustic monitoring of beaked whale densities in the Gulf of Mexico," Scientific Reports 5, 16343.
+									</p>
+									<p>
+										The full dataset has 6.5 million clicks with data of the size of about 27GB. University of California San Diego filters the mis-classified clicks and faulty data.
+									</p>
+									<p>
+										The sample of 15MB contains about 2000 samples from each species.
+									</p>
+
+									<h2>DATA PREPARATION AND CLEANING</h2>
+									<p>VARIABLES:</p>
+									<li>MSP echo signal (Byte array).</li>
+									<li>MSP Power Spectral Density (PSD) of the MSP.</li>
+									<li>Peak to Peak MSP value.</li>
+
+									<p>
+										Using Pyspark SQL dataframe and Pandas-On-Spark DataFrame, the PSD byte array is decoded and data preparations are applied to the data set.
+									</p>
+
+									<p> <em>Hint:</em> Convert binary array to float array on big data set using Pandas-On-Spark:</p>
+
+									<script src="https://gist.github.com/saquiel/92b8e8770a2e6fde85d2501dba302876.js"></script>
+
+
+									<a class="image fit"><img src="../images/projects/whales_prediction/psd_ticks.png" alt="psd_ticks" /></a>
+
+									
+									<p>
+										The power spectral density MSP of echo-location clicks is more interpretable by the ML model than the MSN signal.
+									</p>
+									<p>
+										<em>Hint:</em> Transform a float array to a SparkML vector:
+									</p>
+									<script src="https://gist.github.com/saquiel/580770ae2b5240a403f5293667d916f5.js"></script>
+
+									<p>
+										The Variance of the MSP is analyzed using distributed PCA projection (Spark) to extract 90% of the variance.
+									</p>
+									<a class="image fit"><img src="../images/projects/whales_prediction/pca_result.png" alt="PCA result" /></a>
+									<p>
+										With 25 EigenVectors, the size of the PSD array is reduced by a factor of 4 by distributed projection.
+									</p>
+
+									<h2>RESEARCH QUESTIONS</h2>
+									<p>
+										Main question: Is it possible to predict whale species based on echo-location clicks ? With what precision and recall?
+									</p>
+
+
+									<h2>METHODS</h2>
+									<h3>Model</h3>
+
+									<p>
+										The XGBoost model uses the reduced MSP signal to predict whale species. 
+										XGBoost trees are built based on the latest tree result, meaning parallelization is worthless.
+									</p>
+									<h3>
+										Point of comparison
+									</h3>
+									<p>
+										Random classifier on most frequent score as 0.55
+									</p>
+									<p><em>Hint:</em> Transform SparkML vector back to an array to apply XGBoost and SKLearn function:</p>
+									<script src="https://gist.github.com/saquiel/586d81ea5d7c51b7d2450c2ed6bc6341.js"></script>
+
+
+									<h2>FINDINGS: XGBoost results</h2>
+									<p>
+										Results of the model after tuning hyperparameters.
+									</p>
+									<p><em>Hint:</em> Tuning Hyperparameters may take a lot of time. GridSearchCV is a great tool to do it:</p>
+									<script src="https://gist.github.com/saquiel/028164379b0b2385dbaac8ed2a7db8b9.js"></script>
+
+									<p>
+										<em>Note:</em> The resulting hyperparameters are good but you should fine tune manually the best_params_ results.
+									</p>
+
+									<a class="image fit"><img src="../images/projects/whales_prediction/xgboost_error.png" alt="xgboost error" /></a>
+									<a class="image fit"><img src="../images/projects/whales_prediction/wgboost_logloss.png" alt="xgboost logloss" /></a>
+
+									<p>
+										<em>Hint:</em> Graphically finding the best number of trees is not precise enough. Here a SKLearn tool to do it:
+									</p>
+									<script src="https://gist.github.com/saquiel/184541db9b9fa721153dcf2dd376e447.js"></script>
+
+									<a class="image fit"><img src="../images/projects/whales_prediction/xgboost_feature_imp.png" alt="xgboost feature importance" /></a>
+
+									<p>
+										The top EigenVectors are the most important feature. PCA did a good job.
+									</p>
+
+									<h2>FINDINGS: What is the model performance?</h2>
+
+									<a class="image fit"><img src="../images/projects/whales_prediction/xgboost_roc.png" alt="xgboost ROC" /></a>
+
+									<p>
+										The ROC is symmetric: Cuviers and Gervais are fairly predicted.
+									</p>
+
+									<script src="https://gist.github.com/saquiel/42968929110cb186c010ccbe91c4f251.js"></script>
+
+
+									<h2>LIMITATIONS</h2>
+									<p>
+										The technique used to obtain the Power Spectral Density of The echo-location clicks is unknown. By using other signal processing (periodogram or Welch), the results may be different.
+									</p>
+
+									<h2>CONCLUSIONS</h2>
+									<p>
+										The echo-location clicks emitted by beaked whales are used to predict whale species (Curviers and Gervais). Precisely, the power spectral density (PSD) of echo-location clicks.
+										The large size of the PSD array is reduced by a factor of 4 using PCA projection using Spark.
+										The XGBoost model is built and tuned using the XGB Python model and SKLearn.
+										Finally, the model predicts equitably the 2 species of whales with 85% precision and 85% recall.
+									</p>
+
+									<h2>ACKNOWLEDGEMENTS</h2>
+									<p>
+										Data set from: Hildebrand, J. A., Baumann-Pickering, S., Frasier, K. E., Trickey, J. S., Merkens, K. P., Wiggins, S. M., McDonald, M. A., Garrison, L. P., Harris, D., Marques, T. A., and Thomas, L. (2015). "Passive acoustic monitoring of beaked whale densities in the Gulf of Mexico," Scientific Reports 5, 16343.
+									</p>
+									<p>
+										The Data Set was filtered by the University Of California San Diego.
+									</p>
+
+
+									<h2>REFERENCES</h2>
+									<p>
+										"Passive acoustic monitoring of beaked whale densities in the Gulf of Mexico," Scientific Reports 5, 16343.
+									</p>
+									<p>
+										University Of California San Diego, Big Data Analysis using Spark.
+									</p>
+
+									<h2>Further reading</h2>
+									<p>
+										<a href="https://www.oreilly.com/library/view/learning-spark-2nd/9781492050032/">Learning Spark, 2nd Edition by Jules S. Damji, Brooke Wenig, Tathagata Das, Denny Lee.</a>
+									</p>
+									<p>
+										<a href="https://www.oreilly.com/library/view/frank-kanes-taming/9781787287945/">Frank Kane's Taming Big Data with Apache Spark and Python by Frank Kane.</a>
+									</p>
+									<p>
+										<a href="https://www.oreilly.com/library/view/hands-on-machine-learning/9781492032632/">Hands-On Machine Learning with Scikit-Learn, Keras, and TensorFlow, 2nd Edition by Aurélien Géron.</a>
+									</p>
+										
+
+								<p>By Benoit Pont</p>
+								
+
+								</article>
+
+
+							</section>
+
+
+					</div>
+
+				<!-- Footer -->
+					<footer id="footer">
+						
+					</footer>
+
+				<!-- Copyright -->
+					<div id="copyright">
+						<ul><li>Copyright&copy; 2022</li></ul>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="../assets/js/jquery.min.js"></script>
+			<script src="../assets/js/jquery.scrollex.min.js"></script>
+			<script src="../assets/js/jquery.scrolly.min.js"></script>
+			<script src="../assets/js/browser.min.js"></script>
+			<script src="../assets/js/breakpoints.min.js"></script>
+			<script src="../assets/js/util.js"></script>
+			<script src="../assets/js/main.js"></script>
+
+	</body>
+</html>
